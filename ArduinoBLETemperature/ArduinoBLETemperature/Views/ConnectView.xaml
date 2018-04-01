@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ctrl="clr-namespace:ArduinoBLETemperature.Controls"
+             xmlns:views="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             x:Class="ArduinoBLETemperature.Views.ConnectView">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTapGestureRecognizerTapped"></TapGestureRecognizer>
+            </Grid.GestureRecognizers>
+            <ctrl:CircleScanner x:Name="CircleScanner" Radius="0" IsActive="False">
+                <ctrl:CircleScanner.Colors>
+                    <Color x:Key="Slate">#404040</Color>
+                    <Color x:Key="Slate">#458623</Color>
+                    <Color x:Key="Slate">#FF0000</Color>
+                </ctrl:CircleScanner.Colors>
+            </ctrl:CircleScanner>
+            <Label x:Name="StatusLabel" TextColor="White" FontSize="Large" 
+                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
+                   Text="Tap to scan"></Label>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
