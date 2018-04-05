@@ -2,6 +2,7 @@
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,9 +33,10 @@ namespace ArduinoBLETemperature.Views
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     var bytes = args.Characteristic.Value;
-                    LbTmp.Text = Encoding.ASCII.GetString(bytes);
+                    float temperature = float.Parse(Encoding.Default.GetString(bytes), CultureInfo.InvariantCulture);
+                    Thermometer.Temperature = temperature;
                 });
-               
+
             };
 
             await characteristic.StartUpdatesAsync();
