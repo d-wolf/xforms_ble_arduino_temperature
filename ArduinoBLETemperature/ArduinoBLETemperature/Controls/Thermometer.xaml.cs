@@ -18,17 +18,17 @@ namespace ArduinoBLETemperature.Controls
         }
 
         public static readonly BindableProperty TemperatureProperty =
-    BindableProperty.Create(nameof(Temperature), typeof(float), typeof(Thermometer), 0.0f);
+    BindableProperty.Create(nameof(Temperature), typeof(float), typeof(Thermometer), 0.0f, propertyChanged: OnTemperatureChanged);
 
         public Thermometer ()
 		{
 			InitializeComponent ();
+        }
 
-            Device.StartTimer(TimeSpan.FromMilliseconds(33), () =>
-            {
-               CanvasView.InvalidateSurface();
-                return true;
-            });
+        private static void OnTemperatureChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            Thermometer thermometer = bindable as Thermometer;
+            thermometer?.CanvasView.InvalidateSurface();
         }
 
         private void OnPainting(object sender, SKPaintSurfaceEventArgs e)
