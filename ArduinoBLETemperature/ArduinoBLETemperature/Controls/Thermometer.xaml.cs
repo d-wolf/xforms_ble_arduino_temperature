@@ -8,8 +8,8 @@ using Xamarin.Forms.Xaml;
 namespace ArduinoBLETemperature.Controls
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Thermometer : ContentView
-	{
+    public partial class Thermometer : ContentView
+    {
 
         public float Temperature
         {
@@ -20,9 +20,9 @@ namespace ArduinoBLETemperature.Controls
         public static readonly BindableProperty TemperatureProperty =
     BindableProperty.Create(nameof(Temperature), typeof(float), typeof(Thermometer), 0.0f, propertyChanged: OnTemperatureChanged);
 
-        public Thermometer ()
-		{
-			InitializeComponent ();
+        public Thermometer()
+        {
+            InitializeComponent();
         }
 
         private static void OnTemperatureChanged(BindableObject bindable, object oldValue, object newValue)
@@ -31,20 +31,32 @@ namespace ArduinoBLETemperature.Controls
             thermometer?.CanvasView.InvalidateSurface();
         }
 
-        private void OnPainting(object sender, SKPaintSurfaceEventArgs e)
+        // fluid glass parameter
+        private int bottomFluidGlassCircleCenterY = -160;
+        private float bottomFluidGlassHullRadius = 100;
+        private int topFluidGlassCircleCenterY = 100;
+        private int topFluidGlassWidth = 80;
+
+        // fluid parameter
+        private int fluidHullPadding = 20;
+
+        // marker parameter
+        public int startMarkerDistance = 20;
+        private int markerOffsetX = 20;
+
+        // scale parameter
+        private int minTemp = -30;
+        private int maxTemp = 50;
+
+        private void DrawFluidGlass(SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-
-            canvas.Clear();
-
             SKPoint center = new SKPoint(info.Width / 2, info.Height / 2);
 
-
-
             // fluid glass
-            SKPoint bottomFluidGlassHullCenter = new SKPoint(info.Width / 2, info.Height - 160);
+            SKPoint bottomFluidGlassHullCenter = new SKPoint(info.Width / 2, info.Height + bottomFluidGlassCircleCenterY);
 
             SKPaint fluidGlassHullPaint = new SKPaint
             {
@@ -54,9 +66,9 @@ namespace ArduinoBLETemperature.Controls
             };
 
             SKRect fluidTopGlass = new SKRect();
-            fluidTopGlass.Left = bottomFluidGlassHullCenter.X - 40;
-            fluidTopGlass.Top = 0 + 100;
-            fluidTopGlass.Right = fluidTopGlass.Left + 80;
+            fluidTopGlass.Left = bottomFluidGlassHullCenter.X - topFluidGlassWidth / 2;
+            fluidTopGlass.Top = 0 + topFluidGlassCircleCenterY;
+            fluidTopGlass.Right = bottomFluidGlassHullCenter.X + topFluidGlassWidth / 2;
             fluidTopGlass.Bottom = bottomFluidGlassHullCenter.Y;
 
             // top fluid glass
@@ -64,8 +76,15 @@ namespace ArduinoBLETemperature.Controls
             canvas.DrawCircle(bottomFluidGlassHullCenter.X, fluidTopGlass.Top, fluidTopGlass.Width / 2, fluidGlassHullPaint);
 
             // bottom fluid glass
-            canvas.DrawCircle(bottomFluidGlassHullCenter.X, bottomFluidGlassHullCenter.Y, 100f, fluidGlassHullPaint);
+            canvas.DrawCircle(bottomFluidGlassHullCenter.X, bottomFluidGlassHullCenter.Y, bottomFluidGlassHullRadius, fluidGlassHullPaint);
+        }
 
+        private void DrawFluid(SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            SKPoint center = new SKPoint(info.Width / 2, info.Height / 2);
 
             // fluid
             SKPaint fluidPaint = new SKPaint
@@ -76,23 +95,47 @@ namespace ArduinoBLETemperature.Controls
             };
 
             // fluid bottom
-            canvas.DrawCircle(bottomFluidGlassHullCenter.X, bottomFluidGlassHullCenter.Y, 80f, fluidPaint);
+            canvas.DrawCircle(center.X, info.Height + bottomFluidGlassCircleCenterY, 80f, fluidPaint);
 
-            // draw marker
-            SKPoint markerAreaStart = new SKPoint(bottomFluidGlassHullCenter.X + 100, bottomFluidGlassHullCenter.Y - 120);
+            // draw live
+            float livePixelsYStart = info.Height + bottomFluidGlassCircleCenterY - bottomFluidGlassHullRadius - startMarkerDistance;
+            float livePixelsYEnd = topFluidGlassCircleCenterY;
 
-            SKPoint markerAreaEnd = new SKPoint(markerAreaStart.X, fluidTopGlass.Top);
+            // map real temp to pixels from marker start to end
+            float temperatureY = Temperature.Map(minTemp, maxTemp, livePixelsYStart, livePixelsYEnd);
 
-            int minTemp = -30;
-            int maxTemp = 50;
+            // fluid top
+            SKRect fluidTop = new SKRect();
+            fluidTop.Top = temperatureY;
+            fluidTop.Left = center.X - (topFluidGlassWidth / 2) + fluidHullPadding;
+            fluidTop.Right = center.X + (topFluidGlassWidth / 2) - fluidHullPadding;
+            fluidTop.Bottom = info.Height + bottomFluidGlassCircleCenterY;
+
+            canvas.DrawRect(fluidTop, fluidPaint);
+        }
+
+        private void DrawMarker(SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            SKPoint center = new SKPoint(info.Width / 2, info.Height / 2);
+
+            // draw live
+            float livePixelsYStart = info.Height + bottomFluidGlassCircleCenterY - bottomFluidGlassHullRadius - startMarkerDistance;
+            float livePixelsYEnd = topFluidGlassCircleCenterY;
+
+            // map real temp to pixels from marker start to end
+            float temperatureY = Temperature.Map(minTemp, maxTemp, livePixelsYStart, livePixelsYEnd);
+
             int step = 10;
             int tempRange = Math.Abs(minTemp) + Math.Abs(maxTemp);
             int markerCount = tempRange / step;
 
-            float thermometerPixelHeight = markerAreaStart.Y - markerAreaEnd.Y;
+            float thermometerPixelHeight = livePixelsYStart - livePixelsYEnd;
             float pixelStep = thermometerPixelHeight / markerCount;
 
-            float yMarkerStep = markerAreaStart.Y;
+            float yMarkerStep = livePixelsYStart;
 
             SKPaint markerPaint = new SKPaint
             {
@@ -106,7 +149,7 @@ namespace ArduinoBLETemperature.Controls
             for (int i = 0; i <= markerCount; i++)
             {
                 SKRect marker = new SKRect();
-                marker.Left = markerAreaStart.X;
+                marker.Left = center.X + (topFluidGlassWidth / 2) + markerOffsetX;
                 marker.Top = yMarkerStep + 2;
                 marker.Bottom = yMarkerStep - 2;
                 marker.Right = marker.Left + 100;
@@ -115,36 +158,49 @@ namespace ArduinoBLETemperature.Controls
                 yMarkerStep -= pixelStep;
             }
 
-            // draw live
-
-            float temperatureY = Temperature.Map(minTemp, maxTemp, markerAreaStart.Y, markerAreaEnd.Y);
-
-            // fluid top
-            SKRect fluidTop = fluidTopGlass;
-            fluidTop.Top = temperatureY;
-            fluidTop.Left += 20;
-            fluidTop.Right -= 20;
-
-            canvas.DrawRect(fluidTop, fluidPaint);
-
-            // live indicator
             SKPaint indicatorPaint = new SKPaint
             {
                 IsAntialias = true,
-                Style = SKPaintStyle.Fill,
+                Style = SKPaintStyle.StrokeAndFill,
                 Color = SKColors.Black,
+                StrokeWidth = 2,
                 TextSize = 40,
                 TextAlign = SKTextAlign.Center,
             };
 
-            SKRect indicator = new SKRect();
-            indicator.Left = bottomFluidGlassHullCenter.X;
-            indicator.Top = temperatureY + 1;
-            indicator.Bottom = temperatureY - 1;
-            indicator.Right = bottomFluidGlassHullCenter.X + 400;
-            canvas.DrawRect(indicator, indicatorPaint);
-            canvas.DrawCircle(bottomFluidGlassHullCenter.X, temperatureY, 10, indicatorPaint);
-            canvas.DrawText(Temperature.ToString("0.00"), indicator.Right - 50, indicator.Top - 10, indicatorPaint);
+            SKPoint indicatorTextPosition = new SKPoint(center.X - 350, (livePixelsYStart - (thermometerPixelHeight * 0.8f)));
+
+            SKPoint indicatorUnderlineStart = new SKPoint(indicatorTextPosition.X, indicatorTextPosition.Y);
+            SKPoint indicatorUnderlineEnd = new SKPoint(indicatorTextPosition.X + 120, indicatorTextPosition.Y);
+
+
+            SKPoint connectionLineStart = new SKPoint(indicatorUnderlineEnd.X, indicatorUnderlineEnd.Y);
+            SKPoint connectionLineEnd = new SKPoint(center.X, temperatureY);
+
+            SKPoint[] points = new SKPoint[]
+            {
+                indicatorUnderlineStart,
+                indicatorUnderlineEnd,
+                connectionLineStart,
+                connectionLineEnd,
+            };
+
+            canvas.DrawPoints(SKPointMode.Lines, points, indicatorPaint);
+            canvas.DrawCircle(center.X, temperatureY, 10, indicatorPaint);
+            canvas.DrawText(Temperature.ToString("0.00"), indicatorTextPosition.X + 50, indicatorTextPosition.Y - 10, indicatorPaint);
+        }
+
+        public void OnPainting(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            canvas.Clear();
+            SKPoint center = new SKPoint(info.Width / 2, info.Height / 2);
+
+            DrawFluidGlass(e);
+            DrawFluid(e);
+            DrawMarker(e);
         }
     }
 

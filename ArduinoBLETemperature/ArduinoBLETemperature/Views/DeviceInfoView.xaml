@@ -5,7 +5,7 @@
              x:Class="ArduinoBLETemperature.Views.DeviceInfoView">
     <ContentPage.Content>
         <Grid>
-            <ctrl:Thermometer x:Name="Thermometer"></ctrl:Thermometer>
+            <ctrl:Thermometer x:Name="Thermometer" Temperature="12"></ctrl:Thermometer>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

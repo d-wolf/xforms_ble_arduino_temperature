@@ -15,10 +15,17 @@ namespace ArduinoBLETemperature.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DeviceInfoView : ContentPage
     {
-        public DeviceInfoView(IDevice bleDevice)
+        private IDevice _bleDevice;
+
+        public DeviceInfoView()
         {
             InitializeComponent();
-            ConnectToDeviceAsync(bleDevice);
+        }
+
+        public DeviceInfoView(IDevice bleDevice) : this()
+        {
+            _bleDevice = bleDevice;
+            ConnectToDeviceAsync(_bleDevice);
         }
 
         public async Task ConnectToDeviceAsync(IDevice bleDevice)
