@@ -21,6 +21,9 @@ namespace ArduinoBLETemperature.Views
         {
             InitializeComponent();
 
+            CircleScanner.Colors.Add((Color)Application.Current.Resources["Orange"]);
+            CircleScanner.Colors.Add((Color)Application.Current.Resources["Yellow"]);
+
             _btAdapter = CrossBluetoothLE.Current.Adapter;
             _btAdapter.DeviceDiscovered += (s, a) =>
             {

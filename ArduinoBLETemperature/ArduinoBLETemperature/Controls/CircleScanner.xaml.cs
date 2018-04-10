@@ -86,14 +86,14 @@ namespace ArduinoBLETemperature.Controls
 
             SKPaint paint = new SKPaint
             {
-                IsAntialias = true,
+                IsAntialias = false,
                 Style = SKPaintStyle.Fill,
                 Color = Colors[_colorIndex].ToSKColor()
             };
 
             canvas.DrawCircle(center.X, center.Y, Radius, paint);
 
-            Radius += 8;
+            Radius += 40;
 
             int hRectInCircle = (int)((Radius / Math.Sqrt(2)) * 2);
 

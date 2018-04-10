@@ -2,9 +2,13 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ArduinoBLETemperature.App">
-	<Application.Resources>
-
-		<!-- Application resource dictionary -->
-
-	</Application.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Teal">#00878F</Color>
+            <Color x:Key="LightTeal">#62AEB2</Color>
+            <Color x:Key="Orange">#E47128</Color>
+            <Color x:Key="Yellow">#E5AD24</Color>
+            <Color x:Key="Brown">#8C7965</Color>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
