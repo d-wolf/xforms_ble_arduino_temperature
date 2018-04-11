@@ -4,11 +4,15 @@
              x:Class="ArduinoBLETemperature.App">
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Teal">#00878F</Color>
-            <Color x:Key="LightTeal">#62AEB2</Color>
-            <Color x:Key="Orange">#E47128</Color>
-            <Color x:Key="Yellow">#E5AD24</Color>
-            <Color x:Key="Brown">#8C7965</Color>
+            <Color x:Key="Teal">#00979d</Color>
+            <Color x:Key="LightTeal">#6bbfc1</Color>
+            <Color x:Key="DarkTeal">#008184</Color>
+            <Color x:Key="Orange">#f39c12</Color>
+            <Color x:Key="DarkOrange">#d94900</Color>
+            <Color x:Key="Yellow">#f1c40f</Color>
+            <Color x:Key="Brown">#9e846d</Color>
+            <Color x:Key="LightBrown">#ebdcd6</Color>
+            <Color x:Key="LightGray">#e5e5e5</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -10,7 +10,7 @@
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTapGestureRecognizerTapped"></TapGestureRecognizer>
             </Grid.GestureRecognizers>
-            <ctrl:CircleScanner x:Name="CircleScanner" Radius="0" IsActive="False">
+            <ctrl:CircleScanner x:Name="CircleScanner">
             </ctrl:CircleScanner>
             <Label x:Name="StatusLabel" TextColor="White" FontSize="Large" 
                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 

@@ -46,13 +46,74 @@ namespace ArduinoBLETemperature.Controls
         private const int markerStep = 10;
 
         // scale parameter
-        private const int minTemp = -30;
-        private const int maxTemp = 50;
+        public int MinTemperature
+        {
+            get { return (int)GetValue(MinTemperatureProperty); }
+            set { SetValue(MinTemperatureProperty, value); }
+        }
+
+        public static readonly BindableProperty MinTemperatureProperty =
+    BindableProperty.Create(nameof(MinTemperature), typeof(int), typeof(Thermometer), -30);
+
+        public int MaxTemperature
+        {
+            get { return (int)GetValue(MaxTemperatureProperty); }
+            set { SetValue(MaxTemperatureProperty, value); }
+        }
+
+        public static readonly BindableProperty MaxTemperatureProperty =
+    BindableProperty.Create(nameof(MaxTemperature), typeof(int), typeof(Thermometer), 50);
 
         // indicator
         private const int indicatorOffset = 350;
         // from 0.0 to 1.0
         private const float indicatorPositionY = 0.8f;
+
+        // colors
+        public Color GlassColor
+        {
+            get { return (Color)GetValue(GlassColorProperty); }
+            set { SetValue(GlassColorProperty, value); }
+        }
+
+        public static readonly BindableProperty GlassColorProperty =
+    BindableProperty.Create(nameof(GlassColor), typeof(Color), typeof(CircleScanner), Color.LightGray);
+
+        public Color FluidColor
+        {
+            get { return (Color)GetValue(FluidColorProperty); }
+            set { SetValue(FluidColorProperty, value); }
+        }
+
+        public static readonly BindableProperty FluidColorProperty =
+    BindableProperty.Create(nameof(FluidColor), typeof(Color), typeof(CircleScanner), Color.Red);
+
+        public Color MarkerColor
+        {
+            get { return (Color)GetValue(MarkerColorProperty); }
+            set { SetValue(MarkerColorProperty, value); }
+        }
+
+        public static readonly BindableProperty MarkerColorProperty =
+    BindableProperty.Create(nameof(MarkerColor), typeof(Color), typeof(CircleScanner), Color.LightGray);
+
+        public Color IndicatorColor
+        {
+            get { return (Color)GetValue(IndicatorColorProperty); }
+            set { SetValue(IndicatorColorProperty, value); }
+        }
+
+        public static readonly BindableProperty IndicatorColorProperty =
+    BindableProperty.Create(nameof(IndicatorColor), typeof(Color), typeof(CircleScanner), Color.Black);
+
+        public Color IndicatorTextColor
+        {
+            get { return (Color)GetValue(IndicatorTextColorProperty); }
+            set { SetValue(IndicatorTextColorProperty, value); }
+        }
+
+        public static readonly BindableProperty IndicatorTextColorProperty =
+    BindableProperty.Create(nameof(IndicatorTextColor), typeof(Color), typeof(CircleScanner), Color.Black);
 
         private void DrawFluidGlass(SKPaintSurfaceEventArgs e)
         {
@@ -68,7 +129,7 @@ namespace ArduinoBLETemperature.Controls
             {
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill,
-                Color = SKColors.LightGray,
+                Color = GlassColor.ToSKColor(),
             };
 
             SKRect fluidTopGlass = new SKRect();
@@ -97,7 +158,7 @@ namespace ArduinoBLETemperature.Controls
             {
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill,
-                Color = SKColors.Red,
+                Color = FluidColor.ToSKColor(),
             };
 
             // fluid bottom
@@ -108,7 +169,7 @@ namespace ArduinoBLETemperature.Controls
             float livePixelsYEnd = topFluidGlassCircleCenterY;
 
             // map real temp to pixels from marker start to end
-            float temperatureY = Temperature.Map(minTemp, maxTemp, livePixelsYStart, livePixelsYEnd);
+            float temperatureY = Temperature.Map(MinTemperature, MaxTemperature, livePixelsYStart, livePixelsYEnd);
 
             // fluid top
             SKRect fluidTop = new SKRect
@@ -134,9 +195,9 @@ namespace ArduinoBLETemperature.Controls
             float livePixelsYEnd = topFluidGlassCircleCenterY;
 
             // map real temp to pixels from marker start to end
-            float temperatureY = Temperature.Map(minTemp, maxTemp, livePixelsYStart, livePixelsYEnd);
+            float temperatureY = Temperature.Map(MinTemperature, MaxTemperature, livePixelsYStart, livePixelsYEnd);
 
-            int tempRange = Math.Abs(minTemp) + Math.Abs(maxTemp);
+            int tempRange = Math.Abs(MinTemperature) + Math.Abs(MaxTemperature);
             int markerCount = tempRange / markerStep;
 
             float thermometerPixelHeight = livePixelsYStart - livePixelsYEnd;
@@ -148,7 +209,7 @@ namespace ArduinoBLETemperature.Controls
             {
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill,
-                Color = SKColors.LightGray,
+                Color = MarkerColor.ToSKColor(),
                 TextSize = 40,
                 TextAlign = SKTextAlign.Center,
             };
@@ -164,18 +225,16 @@ namespace ArduinoBLETemperature.Controls
                 marker.Right = marker.Left + 100;
 
                 canvas.DrawRect(marker, markerPaint);
-                canvas.DrawText((minTemp + (i * markerStep)).ToString(), marker.Right - 30, yMarkerStep - 10, markerPaint);
+                canvas.DrawText((MinTemperature + (i * markerStep)).ToString(), marker.Right - 30, yMarkerStep - 10, markerPaint);
                 yMarkerStep -= pixelStep;
             }
 
-            SKPaint indicatorPaint = new SKPaint
+            SKPaint indicatorGeometryPaint = new SKPaint
             {
                 IsAntialias = true,
                 Style = SKPaintStyle.StrokeAndFill,
-                Color = SKColors.Black,
-                StrokeWidth = 2,
-                TextSize = 40,
-                TextAlign = SKTextAlign.Left,
+                Color = IndicatorColor.ToSKColor(),
+                StrokeWidth = 6,   
             };
 
             SKPoint indicatorTextPosition = new SKPoint(center.X - indicatorOffset, (livePixelsYStart - (thermometerPixelHeight * indicatorPositionY)));
@@ -194,9 +253,19 @@ namespace ArduinoBLETemperature.Controls
                 connectionLineEnd,
             };
 
-            canvas.DrawPoints(SKPointMode.Lines, points, indicatorPaint);
-            canvas.DrawCircle(center.X, temperatureY, 10, indicatorPaint);
-            canvas.DrawText(Temperature.ToString("0.00"), indicatorTextPosition.X, indicatorTextPosition.Y - 5, indicatorPaint);
+            canvas.DrawPoints(SKPointMode.Lines, points, indicatorGeometryPaint);
+            canvas.DrawCircle(center.X, temperatureY, 10, indicatorGeometryPaint);
+
+            SKPaint indicatorTextPaint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.StrokeAndFill,
+                Color = IndicatorTextColor.ToSKColor(),
+                TextSize = 50,
+                TextAlign = SKTextAlign.Left,
+            };
+
+            canvas.DrawText(Temperature.ToString("0.00"), indicatorTextPosition.X, indicatorTextPosition.Y - 10, indicatorTextPaint);
         }
 
         public void OnPainting(object sender, SKPaintSurfaceEventArgs e)

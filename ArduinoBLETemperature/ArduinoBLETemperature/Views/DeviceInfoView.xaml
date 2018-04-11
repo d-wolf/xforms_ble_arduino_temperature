@@ -2,10 +2,16 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ctrl="clr-namespace:ArduinoBLETemperature.Controls"
-             x:Class="ArduinoBLETemperature.Views.DeviceInfoView">
+             x:Class="ArduinoBLETemperature.Views.DeviceInfoView" Title="Temperature" BackgroundColor="{StaticResource Key=Teal}">
     <ContentPage.Content>
         <Grid>
-            <ctrl:Thermometer x:Name="Thermometer" Temperature="12"></ctrl:Thermometer>
+            <ctrl:Thermometer x:Name="Thermometer"
+                              GlassColor="White"
+                              FluidColor="Red"
+                              MarkerColor="White"
+                              IndicatorColor="{StaticResource Key=Yellow}"
+                              IndicatorTextColor="{StaticResource Key=Yellow}">
+            </ctrl:Thermometer>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

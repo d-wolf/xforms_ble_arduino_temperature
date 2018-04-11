@@ -15,7 +15,7 @@ namespace ArduinoBLETemperature
 
             MainPage = new NavigationPage(new Views.ConnectView())
             {
-                BarBackgroundColor = (Color)Application.Current.Resources["Teal"],
+                BarBackgroundColor = (Color)Application.Current.Resources["DarkTeal"],
             };
 		}
 

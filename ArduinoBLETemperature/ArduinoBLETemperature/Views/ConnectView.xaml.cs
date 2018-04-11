@@ -1,5 +1,6 @@
 ﻿using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,15 +22,34 @@ namespace ArduinoBLETemperature.Views
         {
             InitializeComponent();
 
-            CircleScanner.Colors.Add((Color)Application.Current.Resources["Orange"]);
-            CircleScanner.Colors.Add((Color)Application.Current.Resources["Yellow"]);
+            CircleScanner.Colors.Add((Color)Application.Current.Resources["LightTeal"]);
+            CircleScanner.Colors.Add((Color)Application.Current.Resources["Teal"]);
 
             _btAdapter = CrossBluetoothLE.Current.Adapter;
-            _btAdapter.DeviceDiscovered += (s, a) =>
+            _btAdapter.DeviceDiscovered += OnDeviceDiscovered;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            StatusLabel.Text = "Tap to scan";
+            CircleScanner.IsActive = false;
+            CircleScanner.Radius = 0;
+
+            foreach (var device in _btAdapter.ConnectedDevices)
+                _btAdapter.DisconnectDeviceAsync(device);
+
+
+        }
+
+        private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(e.Device.Name) && e.Device.Name.Contains("HC-08"))
             {
-                if (!string.IsNullOrWhiteSpace(a.Device.Name) && a.Device.Name.Contains("HC-08"))
-                    Navigation.PushAsync(new DeviceInfoView(a.Device));
-            };
+                StatusLabel.Text = "Connecting...";
+                Navigation.PushAsync(new DeviceInfoView(e.Device));
+            }
         }
 
         private async void OnTapGestureRecognizerTapped(object sender, EventArgs args)
@@ -39,13 +59,13 @@ namespace ArduinoBLETemperature.Views
 
             if (_isScanning)
             {
-                StatusLabel.Text = "Scanning...";
+                StatusLabel.Text = "Searching...";
                 await _btAdapter.StartScanningForDevicesAsync();
             }
             else
             {
-                StatusLabel.Text = "Tap to scan";
                 await _btAdapter.StopScanningForDevicesAsync();
+                StatusLabel.Text = "Tap to scan";
             }
         }
     }
