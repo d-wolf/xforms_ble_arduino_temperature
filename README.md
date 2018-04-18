@@ -21,7 +21,7 @@ This small project shows how to send (temperature) data from an Arduino to an An
 
 ```
 ArduinoBLETemperature/      the xamarin forms app
-arduino/                    .ino for the Arduino Uno
+arduino/                    .ino for the Arduino UNO
 doc/                        documentation
 ```
 ## Components
