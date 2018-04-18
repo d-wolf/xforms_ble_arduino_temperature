@@ -2,8 +2,14 @@
 
 This small project shows how to send (temperature) data from an Arduino to an Android, iOS or Windows 10 device via Bluetooth Low Energy using Xamarin Froms.
 
-<img src="https://raw.githubusercontent.com/d-wolf/ArduinoBLETemperature/master/doc/images/app/01_ABLET.png" width="300">
-<img src="https://raw.githubusercontent.com/d-wolf/ArduinoBLETemperature/master/doc/images/app/02_ABLET.png" width="300">
+<div style="text-align: center"><table><tr>
+    <td style="text-align: center">
+       <img src="https://raw.githubusercontent.com/d-wolf/ArduinoBLETemperature/master/doc/images/app/01_ABLET.png" width="250">
+    </td>
+    <td style="text-align: center">
+        <img src="https://raw.githubusercontent.com/d-wolf/ArduinoBLETemperature/master/doc/images/app/02_ABLET.png" width="250">
+    </td>
+</tr></table></div>
 
 ## Contents
 
