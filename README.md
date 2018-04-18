@@ -14,6 +14,7 @@ This small project shows how to send (temperature) data from an Arduino to an An
 ## Contents
 
 - [Repo](#Repo)
+- [Components](#Components)
 - [Sketch](#Sketch)
 
 ## Repo
@@ -23,6 +24,12 @@ ArduinoBLETemperature/      the xamarin forms app
 arduino/                    .ino for the Arduino Uno
 doc/                        documentation
 ```
+## Components
+
+- Arduino UNO (Rev3)
+- LM35 Temperature Sensor
+- HC-08 Bluetooth Module
+
 ## Sketch
 
 <img src="https://raw.githubusercontent.com/d-wolf/ArduinoBLETemperature/master/doc/images/sketches/ArduinoBLETemperature_bb.png" width="500">
