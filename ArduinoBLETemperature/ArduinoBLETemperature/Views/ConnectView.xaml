@@ -8,13 +8,13 @@
     <ContentPage.Content>
         <Grid>
             <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnTapGestureRecognizerTapped"></TapGestureRecognizer>
+                <TapGestureRecognizer Command="{Binding TapGestureRecognizerTappedCommand}"></TapGestureRecognizer>
             </Grid.GestureRecognizers>
-            <ctrl:CircleScanner x:Name="CircleScanner">
+            <ctrl:CircleScanner x:Name="CircleScanner" IsActive="{Binding IsScanning, Mode=OneWay}}">
             </ctrl:CircleScanner>
-            <Label x:Name="StatusLabel" TextColor="White" FontSize="Large" 
+            <Label TextColor="White" FontSize="Large" 
                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
-                   Text="Tap to scan"></Label>
+                   Text="{Binding StatusText, Mode=OneWay}"></Label>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

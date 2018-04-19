@@ -6,6 +6,7 @@
     <ContentPage.Content>
         <Grid>
             <ctrl:Thermometer x:Name="Thermometer"
+                              Temperature="{Binding Temperature, Mode=OneWay}"
                               GlassColor="White"
                               FluidColor="Red"
                               MarkerColor="White"

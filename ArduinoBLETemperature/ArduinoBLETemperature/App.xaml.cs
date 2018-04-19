@@ -1,25 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ArduinoBLETemperature.ViewModels;
+using ArduinoBLETemperature.Views;
+using Plugin.BLE;
+using Prism;
+using Prism.Ioc;
+using Prism.Unity;
+using System;
 
 using Xamarin.Forms;
 
 namespace ArduinoBLETemperature
 {
-	public partial class App : Application
-	{
-		public App ()
+    public partial class App : PrismApplication
+    {
+		public App (IPlatformInitializer initializer = null) : base(initializer)
 		{
-			InitializeComponent();
-
-            MainPage = new NavigationPage(new Views.ConnectView())
-            {
-                BarBackgroundColor = (Color)Application.Current.Resources["DarkTeal"],
-            };
 		}
 
-		protected override void OnStart ()
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterInstance(CrossBluetoothLE.Current.Adapter);
+            containerRegistry.RegisterForNavigation<NavigationPage>();
+            containerRegistry.RegisterForNavigation<ConnectView, ConnectViewViewModel>();
+            containerRegistry.RegisterForNavigation<DeviceInfoView, DeviceInfoViewViewModel>();
+        }
+
+        protected override void OnInitialized()
+        {
+            InitializeComponent();
+
+            NavigationService.NavigateAsync(new Uri("http://www.ArduinoBLETemperature/NavigationPage/ConnectView", UriKind.Absolute));
+        }
+
+        protected override void OnStart ()
 		{
 			// Handle when your app starts
 		}
@@ -33,5 +45,5 @@ namespace ArduinoBLETemperature
 		{
 			// Handle when your app resumes
 		}
-	}
+    }
 }

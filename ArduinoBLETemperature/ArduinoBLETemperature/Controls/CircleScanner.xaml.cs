@@ -1,12 +1,8 @@
 ﻿using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -37,12 +33,12 @@ namespace ArduinoBLETemperature.Controls
         }
 
         public static readonly BindableProperty IsActiveProperty =
-    BindableProperty.Create(nameof(IsActive), typeof(bool), typeof(CircleScanner), false, propertyChanged: OnIsActiveChanged);
+    BindableProperty.Create(nameof(IsActive), typeof(bool), typeof(CircleScanner), false, BindingMode.OneWayToSource, propertyChanged: OnIsActiveChanged);
 
         public CircleScanner()
         {
             InitializeComponent();
-            BindingContext = this;
+            RootPanel.BindingContext = this;
 
             _canvasView = CanvasView;
             _colorIndex = 0;
@@ -53,7 +49,7 @@ namespace ArduinoBLETemperature.Controls
         private static void OnIsActiveChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var scanner = bindable as CircleScanner;
-
+            
             Device.StartTimer(TimeSpan.FromMilliseconds(33), () =>
             {
                 if (scanner.IsActive)

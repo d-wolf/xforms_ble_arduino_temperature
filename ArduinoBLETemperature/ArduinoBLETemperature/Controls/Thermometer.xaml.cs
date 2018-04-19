@@ -18,11 +18,12 @@ namespace ArduinoBLETemperature.Controls
         }
 
         public static readonly BindableProperty TemperatureProperty =
-    BindableProperty.Create(nameof(Temperature), typeof(float), typeof(Thermometer), 0.0f, propertyChanged: OnTemperatureChanged);
+    BindableProperty.Create(nameof(Temperature), typeof(float), typeof(Thermometer), 0.0f, BindingMode.OneWayToSource, propertyChanged: OnTemperatureChanged);
 
         public Thermometer()
         {
             InitializeComponent();
+            RootPanel.BindingContext = this;
         }
 
         private static void OnTemperatureChanged(BindableObject bindable, object oldValue, object newValue)
